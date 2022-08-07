@@ -1,32 +1,36 @@
 #include <iostream>
 #include "board.h"
-#include "consts.h"
-using namespace consts;
 
 Board::Board()
 {
 	// for now, set the board up in a standard way
 	std::string boardArray[8][8] = {
-		// {"r", "n", "b", "q", "k", "b", "n", "r"},
-		// {"p", "p", "p", "p", "p", "p", "p", "p"},
-		// {" ", " ", " ", " ", " ", " ", " ", " "},
-		// {" ", " ", " ", " ", " ", " ", " ", " "},
-		// {" ", " ", " ", " ", " ", " ", " ", " "},
-		// {" ", " ", " ", " ", " ", " ", " ", " "},
-		// {"P", "P", "P", "P", "P", "P", "P", "P"},
-		// {"R", "N", "B", "Q", "K", "B", "N", "R"} 
+		{"r", "n", "b", "q", "k", "b", "n", "r"},
+		{"p", "p", "p", "p", "p", "p", "p", "p"},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{"P", "P", "P", "P", "P", "P", "P", "P"},
+		{"R", "N", "B", "Q", "K", "B", "N", "R"} 
 
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{"B", " ", " ", " ", " ", " ", " ", " "}
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "}
 	};
 	initializeBoardFromArray(boardArray);
 	precalculateData();
+	this->colourToMove = Piece::White;
+}
+
+int Board::getPiece(int idx)
+{
+	return this->board[idx];
 }
 
 void Board::initializeBoardFromArray(std::string boardArray[8][8])
@@ -42,29 +46,29 @@ void Board::initializeBoardFromArray(std::string boardArray[8][8])
 
 				if (s == ' ') // empty pieces
 				{
-					board[position] = Piece(Type::Empty,Colour::None);
+					this->board[position] = Piece::None;
 				}
 				else if ((isupper(s))) // white pieces
 				{
 					switch (s)
 					{
 						case 'K':
-							board[position] = Piece(Type::King,Colour::White);
+							this->board[position] = Piece::White | Piece::King;
 							break;
 						case 'P':
-							board[position] = Piece(Type::Pawn,Colour::White);
+							this->board[position] = Piece::White | Piece::Pawn;
 							break;
 						case 'N':
-							board[position] = Piece(Type::Knight,Colour::White);
+							this->board[position] = Piece::White | Piece::Knight;
 							break;
 						case 'B':
-							board[position] = Piece(Type::Bishop,Colour::White);
+							this->board[position] = Piece::White | Piece::Bishop;
 							break;
 						case 'R':
-							board[position] = Piece(Type::Rook,Colour::White);
+							this->board[position] = Piece::White | Piece::Rook;
 							break;
 						case 'Q':
-							board[position] = Piece(Type::Queen,Colour::White);
+							this->board[position] = Piece::White | Piece::Queen;
 							break;
 					}
 				}
@@ -73,22 +77,22 @@ void Board::initializeBoardFromArray(std::string boardArray[8][8])
 					switch (s)
 					{
 						case 'K':
-							board[position] = Piece(Type::King,Colour::Black);
+							this->board[position] = Piece::Black | Piece::King;
 							break;
 						case 'P':
-							board[position] = Piece(Type::Pawn,Colour::Black);
+							this->board[position] = Piece::Black | Piece::Queen;
 							break;
 						case 'N':
-							board[position] = Piece(Type::Knight,Colour::Black);
+							this->board[position] = Piece::Black | Piece::Knight;
 							break;
 						case 'B':
-							board[position] = Piece(Type::Bishop,Colour::Black);
+							this->board[position] = Piece::Black | Piece::Bishop;
 							break;
 						case 'R':
-							board[position] = Piece(Type::Rook,Colour::Black);
+							this->board[position] = Piece::Black | Piece::Rook;
 							break;
 						case 'Q':
-							board[position] = Piece(Type::Queen,Colour::Black);
+							this->board[position] = Piece::Black | Piece::Queen;
 							break;
 					}
 				}
@@ -100,7 +104,7 @@ void Board::precalculateData()
 {
 	std::vector<std::vector<int> > temp(64, std::vector<int>(0));
 
-	numSqrToEdge = temp;
+	this->numSqrToEdge = temp;
 
 	for (int file = 0; file < 8; ++file)
 	{
@@ -124,12 +128,12 @@ void Board::precalculateData()
 		}
 	}
 
-	dirOffsets.push_back(8);
-	dirOffsets.push_back(-8);
-	dirOffsets.push_back(-1);
-	dirOffsets.push_back(1);
-	dirOffsets.push_back(7);
-	dirOffsets.push_back(-7);
-	dirOffsets.push_back(9);
-	dirOffsets.push_back(-9);
+	this->dirOffsets.push_back(8);
+	this->dirOffsets.push_back(-8);
+	this->dirOffsets.push_back(-1);
+	this->dirOffsets.push_back(1);
+	this->dirOffsets.push_back(7);
+	this->dirOffsets.push_back(-7);
+	this->dirOffsets.push_back(9);
+	this->dirOffsets.push_back(-9);
 }

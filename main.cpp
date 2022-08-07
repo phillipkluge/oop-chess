@@ -1,8 +1,7 @@
 #include <iostream>
-#include "board.h"
+#include "engine.h"
 
 int main()
 {
-    Board playBoard = Board();
     return 0;
 }

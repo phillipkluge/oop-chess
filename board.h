@@ -6,13 +6,16 @@
 class Board
 {
 public:
+	int colourToMove;
 	std::vector<std::vector<int>> numSqrToEdge;
 	std::vector<int> dirOffsets;
 	
 	Board();
-	void initializeBoardFromArray(std::string boardArray[8][8]);
+	int getPiece(int idx);
 
 private:
-	Piece board[64];
+	int board[64];
+
+	void initializeBoardFromArray(std::string boardArray[8][8]);
 	void precalculateData();
 };
