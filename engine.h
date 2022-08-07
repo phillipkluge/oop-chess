@@ -22,4 +22,5 @@ private:
     int enemyColour;
 
     void generateSlidingMoves(int stSqr, int piece);
+    void generatePawnMoves();
 };
