@@ -12,11 +12,14 @@ class Engine
 {
 public:
     Engine();
-    std::vector<Move> generateMoves();
+    void generateMoves();
 
 private:
     Board playBoard;
     std::vector<Move> moves;
+    int colourToMove;
+    int friendlyColour;
+    int enemyColour;
 
     void generateSlidingMoves(int stSqr, int piece);
 };

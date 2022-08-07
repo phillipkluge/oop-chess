@@ -3,28 +3,55 @@
 Engine::Engine()
 {
     this->playBoard = Board();
+    this->colourToMove = Piece::White;
+    this->friendlyColour = Piece::White;
+    this->enemyColour = Piece::Black;
 }
 
-std::vector<Move> Engine::generateMoves()
+void Engine::generateMoves()
 {
-    std::vector<Move> moves;
-
     for (int stSqr = 0; stSqr < 64; stSqr++)
     {
         int piece = playBoard.getPiece(stSqr);
-        if (Piece::isColour(piece, playBoard.colourToMove))
+        if (Piece::isColour(piece, this->colourToMove))
         {
             if (Piece::isSlidingPiece(piece))
             {
                 generateSlidingMoves(stSqr, piece);
             }
+
+            else if (Piece::isType(piece, Piece::Pawn))
+            {
+                // TODO: finish pawn move generation
+            }
         }
     }
-
-    return moves;
 }
 
 void Engine::generateSlidingMoves(int stSqr, int piece)
 {
-    // TODO: Finish sliding move generation
+    int startDir = (Piece::isType(piece, Piece::Bishop)) ? 4 : 0;
+    int endDir = (Piece::isType(piece, Piece::Rook)) ? 4 : 8;
+    
+    for (int direction = startDir; direction < endDir; direction++)
+    {
+        for (int n = 0; n < this->playBoard.numSqrToEdge[stSqr][direction]; n++)
+        {
+            int targetSqr = stSqr + this->playBoard.dirOffsets[direction] * (n + 1);
+            int pieceOnTargetSqr = this->playBoard.getPiece(targetSqr);
+
+            // if blocked by a friendly piece
+            if (Piece::isColour(pieceOnTargetSqr, this->enemyColour))
+            {
+                break;
+            }
+
+            this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+
+            if (Piece::isColour(pieceOnTargetSqr, enemyColour))
+            {
+                break;
+            }
+        }
+    }
 }
