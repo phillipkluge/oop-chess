@@ -6,7 +6,6 @@
 class Board
 {
 public:
-	int colourToMove;
 	std::vector<std::vector<int>> numSqrToEdge;
 	std::vector<int> dirOffsets;
 	
