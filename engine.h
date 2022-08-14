@@ -12,6 +12,7 @@ class Engine
 {
 public:
     Engine();
+    void printAllTargetSqr();
     void generateMoves();
 
 private:
@@ -22,5 +23,5 @@ private:
     int enemyColour;
 
     void generateSlidingMoves(int stSqr, int piece);
-    void generatePawnMoves();
+    void generatePawnMoves(int stSqr, int piece);
 };
