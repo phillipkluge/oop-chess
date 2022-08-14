@@ -11,9 +11,10 @@ public:
 	
 	Board();
 	int getPiece(int idx);
+	bool isEmptySqr(int sqr);
 
 private:
-	int board[64];
+	int board[64] = {0};
 
 	void initializeBoardFromArray(std::string boardArray[8][8]);
 	void precalculateData();

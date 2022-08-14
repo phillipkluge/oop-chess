@@ -18,7 +18,7 @@ Board::Board()
 		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", "Q", " ", " ", " "},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "}
@@ -47,7 +47,7 @@ void Board::initializeBoardFromArray(std::string boardArray[8][8])
 				{
 					this->board[position] = Piece::None;
 				}
-				else if ((isupper(s))) // white pieces
+				else if (isupper(s)) // white pieces
 				{
 					switch (s)
 					{
@@ -75,28 +75,33 @@ void Board::initializeBoardFromArray(std::string boardArray[8][8])
 				{
 					switch (s)
 					{
-						case 'K':
+						case 'k':
 							this->board[position] = Piece::Black | Piece::King;
 							break;
-						case 'P':
+						case 'p':
 							this->board[position] = Piece::Black | Piece::Queen;
 							break;
-						case 'N':
+						case 'n':
 							this->board[position] = Piece::Black | Piece::Knight;
 							break;
-						case 'B':
+						case 'b':
 							this->board[position] = Piece::Black | Piece::Bishop;
 							break;
-						case 'R':
+						case 'r':
 							this->board[position] = Piece::Black | Piece::Rook;
 							break;
-						case 'Q':
+						case 'q':
 							this->board[position] = Piece::Black | Piece::Queen;
 							break;
 					}
 				}
 			}
 		}
+}
+
+bool Board::isEmptySqr(int sqr)
+{
+	return this->board[sqr] == Piece::None;
 }
 
 void Board::precalculateData()
