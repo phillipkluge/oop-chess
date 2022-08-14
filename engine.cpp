@@ -30,7 +30,6 @@ void Engine::generateMoves()
             {
                 generateSlidingMoves(stSqr, piece);
             }
-
             else if (Piece::isType(piece, Piece::Pawn))
             {
                 generatePawnMoves(stSqr, piece);
@@ -38,6 +37,14 @@ void Engine::generateMoves()
             else if (Piece::isType(piece, Piece::Knight))
             {
                 generateKnightMoves(stSqr, piece);
+            }
+            else if (Piece::isType(piece, Piece::King))
+            {
+                generateKingMoves(stSqr, piece);
+            }
+            else
+            {
+                return;
             }
         }
     }
@@ -152,6 +159,30 @@ void Engine::generateSlidingMoves(int stSqr, int piece)
             if (Piece::isColour(pieceOnTargetSqr, enemyColour))
             {
                 break;
+            }
+        }
+    }
+}
+
+void Engine::generateKingMoves(int stSqr, int piece)
+{
+    for (int direction = 0; direction < 8; direction++)
+    {
+        if (this->playBoard.numSqrToEdge[stSqr][direction] != 0)
+        {
+            int targetSqr = stSqr + this->playBoard.dirOffsets[direction];
+            int pieceOnTargetSqr = this->playBoard.getPiece(targetSqr);
+
+            if (Piece::isColour(pieceOnTargetSqr, this->friendlyColour))
+            {
+                continue;
+            }
+
+            this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+
+            if (Piece::isColour(pieceOnTargetSqr, enemyColour))
+            {
+                continue;
             }
         }
     }

@@ -25,5 +25,6 @@ private:
     void generatePawnMoves(int stSqr, int piece);
     void generateKnightMoves(int stSqr, int piece);
     void generateSlidingMoves(int stSqr, int piece);
+    void generateKingMoves(int stSqr, int piece);
     int isValidKnightMove(int sqr, int dir);
 };
