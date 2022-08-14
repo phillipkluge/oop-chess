@@ -14,12 +14,12 @@ Board::Board()
 		// {"P", "P", "P", "P", "P", "P", "P", "P"},
 		// {"R", "N", "B", "Q", "K", "B", "N", "R"} 
 
+		{" ", " ", " ", " ", " ", " ", " ", "N"},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{" ", " ", " ", "", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "},
 		{" ", " ", " ", " ", " ", " ", " ", " "}
 	};
@@ -104,6 +104,11 @@ bool Board::isEmptySqr(int sqr)
 	return this->board[sqr] == Piece::None;
 }
 
+bool Board::getKnightBoard(int kSqr)
+{
+	return this->knightArray[kSqr];
+}
+
 void Board::precalculateData()
 {
 	std::vector<std::vector<int> > temp(64, std::vector<int>(0));
@@ -140,4 +145,22 @@ void Board::precalculateData()
 	this->dirOffsets.push_back(-7);
 	this->dirOffsets.push_back(9);
 	this->dirOffsets.push_back(-9);
+	//knights
+	this->dirOffsets.push_back(6);
+	this->dirOffsets.push_back(15);
+	this->dirOffsets.push_back(17);
+	this->dirOffsets.push_back(10);
+	this->dirOffsets.push_back(-6);
+	this->dirOffsets.push_back(-15);
+	this->dirOffsets.push_back(-17);
+	this->dirOffsets.push_back(-10);
+
+	this->knightArrayOffsets.push_back(10);
+	this->knightArrayOffsets.push_back(23);
+	this->knightArrayOffsets.push_back(25);
+	this->knightArrayOffsets.push_back(15);
+	this->knightArrayOffsets.push_back(-10);
+	this->knightArrayOffsets.push_back(-23);
+	this->knightArrayOffsets.push_back(-25);
+	this->knightArrayOffsets.push_back(-15);
 }

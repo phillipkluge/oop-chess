@@ -1,5 +1,6 @@
 #include "engine.h"
 #include <iostream>
+#include <math.h>
 
 Engine::Engine()
 {
@@ -33,6 +34,10 @@ void Engine::generateMoves()
             else if (Piece::isType(piece, Piece::Pawn))
             {
                 generatePawnMoves(stSqr, piece);
+            }
+            else if (Piece::isType(piece, Piece::Knight))
+            {
+                generateKnightMoves(stSqr, piece);
             }
         }
     }
@@ -103,6 +108,27 @@ void Engine::generatePawnMoves(int stSqr, int piece)
     }
 }
 
+void Engine::generateKnightMoves(int stSqr, int piece)
+{
+    for (int direction = 8; direction < 16; direction++)
+    {
+        int targetSqr = this->isValidKnightMove(stSqr, direction);
+        if (targetSqr != -1)
+        {
+            int pieceOnTargetSqr = this->playBoard.getPiece(targetSqr);
+
+            if (Piece::isColour(pieceOnTargetSqr, this->friendlyColour))
+            {
+                continue;
+            }
+            else
+            {
+                this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+            }
+        }
+    }
+}
+
 void Engine::generateSlidingMoves(int stSqr, int piece)
 {
     int startDir = (Piece::isType(piece, Piece::Bishop)) ? 4 : 0;
@@ -128,5 +154,22 @@ void Engine::generateSlidingMoves(int stSqr, int piece)
                 break;
             }
         }
+    }
+}
+
+int Engine::isValidKnightMove(int sqr, int dir)
+{
+    int rank = std::floor(sqr / 8);
+
+    int translation = (sqr + 26) + (4 * rank);
+    int targetSqr = translation + playBoard.knightArrayOffsets[dir - 8];
+
+    if (!playBoard.getKnightBoard(targetSqr))
+    {
+        return -1;
+    }
+    else
+    {
+        return sqr + playBoard.dirOffsets[dir];
     }
 }

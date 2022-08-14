@@ -22,6 +22,8 @@ private:
     int friendlyColour;
     int enemyColour;
 
-    void generateSlidingMoves(int stSqr, int piece);
     void generatePawnMoves(int stSqr, int piece);
+    void generateKnightMoves(int stSqr, int piece);
+    void generateSlidingMoves(int stSqr, int piece);
+    int isValidKnightMove(int sqr, int dir);
 };
