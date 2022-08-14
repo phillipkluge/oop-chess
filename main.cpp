@@ -5,5 +5,6 @@ int main()
 {
     Engine e = Engine();
     e.generateMoves();
+    e.printAllTargetSqr();
     return 0;
 }
