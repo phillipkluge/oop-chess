@@ -10,7 +10,7 @@ Engine::Engine()
     this->enemyColour = Piece::Black;
 }
 
-void Engine::printAllTargetSqr()
+void Engine::printAllTargetSqr(std::vector<Move> &moves)
 {
     for (int i = 0; i < moves.size(); i++)
     {
@@ -19,8 +19,58 @@ void Engine::printAllTargetSqr()
     std::cout << std::endl;
 }
 
-void Engine::generateMoves()
+int Engine::moveGenerationTest(int depth)
 {
+    if (depth == 0)
+    {
+        return 1;
+    }
+
+    std::vector<Move> moves = this->generateMoves();
+    int numPositions = 0;
+
+    for (const Move &m : moves)
+    {
+        this->makeMove(m);
+        // playBoard.printBoard();
+        numPositions += this->moveGenerationTest(depth - 1);
+        this->unmakeMove();
+    }
+
+    return numPositions;
+}
+
+void Engine::makeMove(Move m)
+{
+    playBoard.setSqr(m.stSqr, Piece::None);
+    playBoard.setSqr(m.endSqr, m.movedPiece);
+    this->moveList.push_back(m);
+    this->switchPlayers();
+}
+
+void Engine::unmakeMove()
+{
+    if (!moveList.empty())
+    {
+        Move m = moveList.back();
+        playBoard.setSqr(m.endSqr, m.capturedPiece);
+        playBoard.setSqr(m.stSqr, m.movedPiece);
+        moveList.pop_back();
+        this->switchPlayers();
+    }
+}
+
+void Engine::switchPlayers()
+{
+    int colourSwitch = (this->colourToMove == Piece::White) ? Piece::Black : Piece::White;
+    this->enemyColour = colourToMove;
+    this->friendlyColour = colourSwitch;
+    this->colourToMove = colourSwitch;
+}
+
+std::vector<Move> Engine::generateMoves()
+{
+    std::vector<Move> moves;
     for (int stSqr = 0; stSqr < 64; stSqr++)
     {
         int piece = playBoard.getPiece(stSqr);
@@ -28,29 +78,26 @@ void Engine::generateMoves()
         {
             if (Piece::isSlidingPiece(piece))
             {
-                generateSlidingMoves(stSqr, piece);
+                generateSlidingMoves(stSqr, piece, moves);
             }
             else if (Piece::isType(piece, Piece::Pawn))
             {
-                generatePawnMoves(stSqr, piece);
+                generatePawnMoves(stSqr, piece, moves);
             }
             else if (Piece::isType(piece, Piece::Knight))
             {
-                generateKnightMoves(stSqr, piece);
+                generateKnightMoves(stSqr, piece, moves);
             }
             else if (Piece::isType(piece, Piece::King))
             {
-                generateKingMoves(stSqr, piece);
-            }
-            else
-            {
-                return;
+                generateKingMoves(stSqr, piece, moves);
             }
         }
     }
+    return moves;
 }
 
-void Engine::generatePawnMoves(int stSqr, int piece)
+void Engine::generatePawnMoves(int stSqr, int piece, std::vector<Move> &moves)
 {
     int forwardDir,rightDir,leftDir;
     if (Piece::isColour(piece, Piece::White))
@@ -87,7 +134,7 @@ void Engine::generatePawnMoves(int stSqr, int piece)
             break;
         }
 
-        this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+        moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr, .movedPiece = piece, .capturedPiece = pieceOnTargetSqr});
     }
 
     // left captures
@@ -98,7 +145,7 @@ void Engine::generatePawnMoves(int stSqr, int piece)
 
         if (Piece::isColour(pieceOnTargetSqr, this->enemyColour))
         {
-            this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+            moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr, .movedPiece = piece, .capturedPiece = pieceOnTargetSqr});
         }
     }
 
@@ -110,12 +157,12 @@ void Engine::generatePawnMoves(int stSqr, int piece)
 
         if (Piece::isColour(pieceOnTargetSqr, this->enemyColour))
         {
-            this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+            moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr, .movedPiece = piece, .capturedPiece = pieceOnTargetSqr});
         }
     }
 }
 
-void Engine::generateKnightMoves(int stSqr, int piece)
+void Engine::generateKnightMoves(int stSqr, int piece, std::vector<Move> &moves)
 {
     for (int direction = 8; direction < 16; direction++)
     {
@@ -130,13 +177,13 @@ void Engine::generateKnightMoves(int stSqr, int piece)
             }
             else
             {
-                this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+                moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr, .movedPiece = piece, .capturedPiece = pieceOnTargetSqr});
             }
         }
     }
 }
 
-void Engine::generateSlidingMoves(int stSqr, int piece)
+void Engine::generateSlidingMoves(int stSqr, int piece, std::vector<Move> &moves)
 {
     int startDir = (Piece::isType(piece, Piece::Bishop)) ? 4 : 0;
     int endDir = (Piece::isType(piece, Piece::Rook)) ? 4 : 8;
@@ -154,7 +201,7 @@ void Engine::generateSlidingMoves(int stSqr, int piece)
                 break;
             }
 
-            this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+            moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr, .movedPiece = piece, .capturedPiece = pieceOnTargetSqr});
 
             if (Piece::isColour(pieceOnTargetSqr, enemyColour))
             {
@@ -164,7 +211,7 @@ void Engine::generateSlidingMoves(int stSqr, int piece)
     }
 }
 
-void Engine::generateKingMoves(int stSqr, int piece)
+void Engine::generateKingMoves(int stSqr, int piece, std::vector<Move> &moves)
 {
     for (int direction = 0; direction < 8; direction++)
     {
@@ -178,7 +225,7 @@ void Engine::generateKingMoves(int stSqr, int piece)
                 continue;
             }
 
-            this->moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr});
+            moves.push_back(Move{.stSqr = stSqr, .endSqr = targetSqr, .movedPiece = piece, .capturedPiece = pieceOnTargetSqr});
 
             if (Piece::isColour(pieceOnTargetSqr, enemyColour))
             {

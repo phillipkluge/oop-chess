@@ -5,31 +5,36 @@ Board::Board()
 {
 	// for now, set the board up in a standard way
 	std::string boardArray[8][8] = {
-		// {"r", "n", "b", "q", "k", "b", "n", "r"},
-		// {"p", "p", "p", "p", "p", "p", "p", "p"},
-		// {" ", " ", " ", " ", " ", " ", " ", " "},
-		// {" ", " ", " ", " ", " ", " ", " ", " "},
-		// {" ", " ", " ", " ", " ", " ", " ", " "},
-		// {" ", " ", " ", " ", " ", " ", " ", " "},
-		// {"P", "P", "P", "P", "P", "P", "P", "P"},
-		// {"R", "N", "B", "Q", "K", "B", "N", "R"} 
+		{"r", "n", "b", "q", "k", "b", "n", "r"},
+		{"p", "p", "p", "p", "p", "p", "p", "p"},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{" ", " ", " ", " ", " ", " ", " ", " "},
+		{"P", "P", "P", "P", "P", "P", "P", "P"},
+		{"R", "N", "B", "Q", "K", "B", "N", "R"} 
 
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", "K", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "},
-		{" ", " ", " ", " ", " ", " ", " ", " "}
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "},
+		// {" ", " ", " ", " ", " ", " ", " ", " "}
 	};
 	initializeBoardFromArray(boardArray);
 	precalculateData();
 }
 
-int Board::getPiece(int idx)
+void Board::setSqr(int sqr, int piece)
 {
-	return this->board[idx];
+	this->board[sqr] = piece;
+}
+
+int Board::getPiece(int sqr)
+{
+	return this->board[sqr];
 }
 
 void Board::initializeBoardFromArray(std::string boardArray[8][8])
@@ -79,7 +84,7 @@ void Board::initializeBoardFromArray(std::string boardArray[8][8])
 							this->board[position] = Piece::Black | Piece::King;
 							break;
 						case 'p':
-							this->board[position] = Piece::Black | Piece::Queen;
+							this->board[position] = Piece::Black | Piece::Pawn;
 							break;
 						case 'n':
 							this->board[position] = Piece::Black | Piece::Knight;
@@ -163,4 +168,37 @@ void Board::precalculateData()
 	this->knightArrayOffsets.push_back(-23);
 	this->knightArrayOffsets.push_back(-25);
 	this->knightArrayOffsets.push_back(-15);
+}
+
+void Board::printBoard()
+{
+	std::unordered_map<int, char> pieceToSymbol({
+		{Piece::None, ' '},
+		{Piece::White | Piece::King, 'K'},
+		{Piece::White | Piece::Pawn, 'P'},
+		{Piece::White | Piece::Knight, 'N'},
+		{Piece::White | Piece::Bishop, 'B'},
+		{Piece::White | Piece::Rook, 'R'},
+		{Piece::White | Piece::Queen, 'Q'},
+		{Piece::Black | Piece::King, 'k'},
+		{Piece::Black | Piece::Pawn, 'p'},
+		{Piece::Black | Piece::Knight, 'n'},
+		{Piece::Black | Piece::Bishop, 'b'},
+		{Piece::Black | Piece::Rook, 'r'},
+		{Piece::Black | Piece::Queen, 'q'},
+	});
+
+	std::cout << "-----------------" << std::endl;
+	for (int i = 7; i >= 0; --i)
+	{
+		for (int j = 0; j < 8; ++j)
+		{
+			int position = ((i * 8) + j);
+			int piece = this->getPiece(position);
+			char& s = pieceToSymbol[piece];
+			std::cout << "|" << s;
+		}
+		std::cout << "|" << std::endl;
+	}
+	std::cout << "-----------------" << std::endl;
 }

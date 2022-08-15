@@ -4,7 +4,7 @@
 int main()
 {
     Engine e = Engine();
-    e.generateMoves();
-    e.printAllTargetSqr();
+    int numMoves = e.moveGenerationTest(6);
+    std::cout << numMoves << std::endl;
     return 0;
 }

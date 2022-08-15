@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include "piece.h"
 
 class Board
@@ -11,9 +12,11 @@ public:
 	std::vector<int> knightArrayOffsets;
 	
 	Board();
-	int getPiece(int idx);
+	void setSqr(int sqr, int piece);
+	int getPiece(int sqr);
 	bool isEmptySqr(int sqr);
 	bool getKnightBoard(int kSqr);
+	void printBoard();
 
 private:
 	int board[64] = {0};
@@ -31,7 +34,6 @@ private:
 		0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0
 	};
-
 	void initializeBoardFromArray(std::string boardArray[8][8]);
 	void precalculateData();
 };
